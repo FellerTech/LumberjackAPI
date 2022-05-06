@@ -1,3 +1,6 @@
 [submodule "Hourglass"]
 	path = sumprojects/Hourglass
 	url = git@github.com:ReliaSolve/Hourglass
+[submodule "subprojects/Hourglass"]
+	path = subprojects/Hourglass
+	url = git@github.com:Reliasolve/Hourglass.git
