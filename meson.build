@@ -5,9 +5,15 @@ project( 'lumberjack' , 'cpp'
 
 
 # Make the Hourglass project
-cmake = import('cmake')
-hrgls_proj = cmake.subproject('Hourglass', cmake_optons : ['DCMAKE_CXX_FLAGS=-fpic'])
+hrgls_cmake = import('cmake')
+hrgls_proj = hrgls_cmake.subproject('Hourglass', hrgls_cmake_options : ['DCMAKE_CXX_FLAGS=-fpic'])
 hrgls_dep = hrgls_proj.get_variable('cm_hrgls_dep')
+
+## Make the Hourglass project
+schema_cmake = import('cmake')
+schema_proj = schema_cmake.subproject('json-schema-validator')
+##schema_proj = schema_cmake.subproject('json_schema_validator', schema_cmake_optons : ['DCMAKE_CXX_FLAGS=-fpic'])
+##schema_dep = schema_proj.get_variable('cm_schema_dep')
 
 # Define project dependencies
 thread_dep = dependency('threads')
