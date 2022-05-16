@@ -8,12 +8,12 @@ project( 'lumberjack' , 'cpp'
 hrgls_cmake = import('cmake')
 hrgls_proj = hrgls_cmake.subproject('Hourglass', hrgls_cmake_options : ['DCMAKE_CXX_FLAGS=-fpic'])
 hrgls_dep = hrgls_proj.get_variable('cm_hrgls_dep')
+#hrgls_includes = hrgls_proj.get_variable('cm_hrgls_inc')
+hrgls_includes = 'subprojects/Hourglass'
 
 ## Make the Hourglass project
 schema_cmake = import('cmake')
 schema_proj = schema_cmake.subproject('json-schema-validator')
-##schema_proj = schema_cmake.subproject('json_schema_validator', schema_cmake_optons : ['DCMAKE_CXX_FLAGS=-fpic'])
-##schema_dep = schema_proj.get_variable('cm_schema_dep')
 
 # Define project dependencies
 thread_dep = dependency('threads')
@@ -29,13 +29,19 @@ executable( 'simple'
   , 'examples/simple.cpp'
   #, install : true
   #  ,  dependencies : [hrgls_dep, thread_dep, lumberjack_lib]
+  , include_directories : ['src', hrgls_includes]
   , link_with : [lumberjack_lib]
   , dependencies : [ thread_dep ]
   )
 
+# Build gtest
+gtest_dep = dependency( 'gtest', fallback : ['gtest', 'gtest_dep'])
 
-#cm = import('cmake')
-#subp = cm.subproject('capnproto-c++-0.7.0', cmake_options : ['-DBUILD_TESTING=OFF', '-DCMAKE_CXX_FLAGS=-fpic'])
-#dep = subp.dependency('capnp')
+tests_src = ['tests/LumberjackUnitTests.cpp']
+tests = executable('LumberjackUnitTests'
+   , sources : tests_src
+   , include_directories : ['src', hrgls_includes]
+   , dependencies : [gtest_dep]
+   , link_with : [lumberjack_lib]
+   )
 
-#executable('main', ['main.cpp'], dependencies: [dep])

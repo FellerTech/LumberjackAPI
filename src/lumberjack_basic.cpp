@@ -25,7 +25,8 @@
 // - https://cpppatterns.com/patterns/pimpl.html
 //
 
-#include "lumberjack_api.hpp"
+//#include "lumberjack_api.hpp"
+#include "lumberjack.hpp"
 #include <iostream>
 #include <chrono>
 #include <ctime>

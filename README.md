@@ -15,3 +15,7 @@ cd ../build/LumberjackAPI
 ## Build with ninja
 ninja
 
+
+# GTest Setupa
+meson wrap install gtest
+
