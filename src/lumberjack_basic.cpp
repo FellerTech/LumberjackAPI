@@ -26,8 +26,10 @@
 //
 
 //#include "lumberjack_api.hpp"
-#include "lumberjack.hpp"
 #include <iostream>
+#include <sstream>
+#include <filesystem>
+
 #include <chrono>
 #include <ctime>
 #include <set>
@@ -58,11 +60,10 @@ using json = nlohmann::json;
  */
 namespace lumberjack {
 
-  /**
-   * \brief Application-side implementation of the Lumberjack interface
-   */
-  Lumberjack::impl {
+  class Lumberjack::impl {
     public:
+
+
       /**
        * \brief connects the application to the hourglass API backend
        * \return connection status
@@ -71,10 +72,10 @@ namespace lumberjack {
         hrgls_Status status = api_.GetStatus();
 
         if( status == hrgls_STATUS_OKAY ) {
-          status_ = Status.OK;
+          status_ = OK;
         }
         else {
-          status_ = Status.ERROR;
+          status_ = ERR;
         }
 
         return status_;
@@ -92,25 +93,38 @@ namespace lumberjack {
         json entry;
 
         //Add auto-generated items
-        entry["timestamp"] = getTimestamp()'
+        entry["timestamp"] = getTimestamp();
         entry["pid"] = getPid();
         entry["deviceId"] = getDeviceId();
-        entry["type"]  = "log"
+        entry["type"]  = "log";
 
         entry["level"] = level;
         entry["message" ] = message;
 
         //Add tags
-        entry["tags"] = json::pars( tags.begin(), tags.end() );
+        //entry["tags"] = json::parse( tags.begin(), tags.end() );
 
+        return true;
+
+      };
+
+      Status getStatus( void ) 
+      {
+        return status_;
+      };
+
+      std::string getVersion( void )
+      {
+        return version_;
       };
 
 
     private:  
+      std::string version_ = "0.0.1";
       hrgls::API api_;
-      Status status_ = Status.NO_INIT;
-      Level printLevel_ = Level.WARNING;
-      Level logLevel_ = level.ERROR;
+      Status status_ = NO_INIT;
+      Severity printLevel_ = WARNING;
+      Severity logLevel_ = ERROR;
       std::thread::id pid; 
 
       /**
@@ -122,10 +136,10 @@ namespace lumberjack {
        */
       std::string getPid() {
         //extract PID
-        stringstream ss;
+        std::stringstream ss;
         ss << std::this_thread::get_id();
 
-        return ss.str()
+        return ss.str();
       }
 
       /**
@@ -137,21 +151,20 @@ namespace lumberjack {
        */
       std::string getDeviceId() {
         std::string mid;
+        std::string name = "/etc/machine-id";
 
         //Check /etc/machine-id
-        std::string name = "/etc/machine-id";
-        if( std::filesystem::is_regular_file(name)) {
-          std::ifstream fptr(name);
-
-          if(fptr.is_open()) {
-              std::stringstream buffer =f.rdbuf();
-              mid = buffer.str();
-          }
+        std::stringstream buffer;
+        std::ifstream fptr(name);
+        if(fptr.is_open()) {
+          buffer  << fptr.rdbuf();
+          mid = buffer.str();
         }
 
         //
-        if mid.empty() {
-          bool rc = append( Severity.ERROR, "Unable to connect to the backend")
+        if( mid.empty() ) {
+          //TODO generate error
+          //append( ERROR, "Unable to connect to the backend");
         }
 
         //TODO: Generate ID from MAC address
@@ -170,15 +183,21 @@ namespace lumberjack {
         return millis;
       }
 
-  }
+  };
 
   /**
    * \brief Lumberjack main class 
    */
-  Lumberjack::Lumberjack() : pimpl{ std::make_unique<impl>()} 
+  Lumberjack::Lumberjack() : pimpl { std::make_unique<impl>()} 
   {
     pimpl->connect();
   };
+
+  Lumberjack::~Lumberjack() = default;
+
+  //Lumberjack::Lumberjack(Lumberjack&&) = default;
+  //Lumberjack& Lumberjack::operator = (Lumberjack&&) = default;
+
 
   //Function to append a new log message
   std::string Lumberjack::append( Severity level
@@ -187,35 +206,31 @@ namespace lumberjack {
       )
   {
     pimpl->append( level, message, tags );
-
-    //Handle print
-    if( level <= printLevel_) {
-       printLog( 
-    }
-
+    return "test";
   }
+
+
+  //Function to append a new log message
+  std::string Lumberjack::append( Severity level
+      , std::string message
+      )
+  {
+    std::vector<std::string> tags;
+    pimpl->append( level, message, tags );
+    return "test";
+  }
+
    
-
-
-
-
- 
-
-    hrgls_Status stat = api_.GetStatus();
-
-    //Verify valid status
-    if( status == hrgls_STATUS_OKAY) {
-      status_ = Status.OK;
-    }
-    else {
-      status_ = Status.ERROR;
-    }
-  }
- 
   Status Lumberjack::getStatus() {
-    status_ = api_.getStatus()
-    return status_;
+    return pimpl->getStatus();
   }
+
+  std::string Lumberjack::getVersion( void )
+  {
+    return pimpl->getVersion();
+  };
+}
+
 
   
 

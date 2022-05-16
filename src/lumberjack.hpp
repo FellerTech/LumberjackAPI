@@ -22,10 +22,10 @@
 #include <nlohmann/json.hpp>
 using json = nlohmann::json;
 
-namespace Lumberjack {
+namespace lumberjack {
   enum Severity{ CRITICAL, ERROR, WARNING, INFO, DEBUG, TRACE, ALL };
-  enum PayloadType { STRING, BINARY };
-  enum Status{ OK, NO_INIT, ERROR, INCOMPATIBLE};
+  enum class PayloadType { STRING, BINARY };
+  enum Status{ OK, NO_INIT, ERR, INCOMPATIBLE};
 
   /**
    * \brief the lumberjack base class provides common functionality used by the
@@ -33,11 +33,14 @@ namespace Lumberjack {
    **/
   class Lumberjack {
     public:
+      Lumberjack();
+      ~Lumberjack();
       /**
        * \brief get API version
        * \return version in a major/minor/patch/release format
        **/
       std::string getVersion();
+      Status getStatus();
 
 
       /**
@@ -59,7 +62,18 @@ namespace Lumberjack {
        **/
       std::string append( Severity level
           , std::string message
-          , std::vector<std::string> tags = std::string() 
+          );
+
+      /**
+       * \brief  Function to insert a new string-based log message.
+       * \param [in] level the enumerated Log level of the issue
+       * \param [in] message text information about the event.
+       * \param [in] tags vector of keywords related to the error
+       * \return unique ID of the entry on success, empty string on failure
+       **/
+      std::string append( Severity level
+          , std::string message
+          , std::vector<std::string> tags
           );
 
       /**
@@ -73,7 +87,7 @@ namespace Lumberjack {
       std::string append( Severity level
           , std::string message
           , std::string module
-          , std::vector<std::string> tags = std::string() 
+          , std::vector<std::string> tags
           );
 
       /**
@@ -124,7 +138,7 @@ namespace Lumberjack {
       //https://cpppatterns.com/patterns/pimpl.html
       class impl;
       std::unique_ptr<impl> pimpl;
-  }
+  };
 }
 
 
