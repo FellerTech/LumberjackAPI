@@ -2,7 +2,7 @@ project( 'lumberjack'
   , 'cpp'
   , version : '0.0.1.-1'
   , license : 'Apache 2.0'
-  , default_options : ['c_std=c11', 'cpp_std=c++11']
+  , default_options : ['c_std=c11', 'cpp_std=c++14']
   )
 
 # Make the Hourglass project

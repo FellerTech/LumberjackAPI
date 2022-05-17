@@ -29,6 +29,7 @@
 #include <iostream>
 #include <sstream>
 #include <filesystem>
+#include <memory>
 
 #include <chrono>
 #include <ctime>
@@ -54,6 +55,15 @@
 #include <nlohmann/json.hpp>
 using json = nlohmann::json;
 
+/**
+ * \brief make_unique replacement
+ */
+namespace FT {
+  template<typename   T, typename... Args>
+  std::unique_ptr<T>   make_unique(Args&&... args) {
+      return std::unique_ptr<T>(new T(std::forward<Args>(args)...));
+  }
+}
 
 /**
  * \brief namespace use to wrap lumberjack functinality
@@ -188,7 +198,7 @@ namespace lumberjack {
   /**
    * \brief Lumberjack main class 
    */
-  Lumberjack::Lumberjack() : pimpl { std::make_unique<impl>()} 
+  Lumberjack::Lumberjack() : pimpl { FT::make_unique<impl>()} 
   {
     pimpl->connect();
   };
