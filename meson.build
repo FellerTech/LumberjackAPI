@@ -17,7 +17,7 @@ hrgls_includes = [ 'subprojects/Hourglass',
 
 ## Make the Hourglass project
 schema_cmake = import('cmake')
-schema_proj = schema_cmake.subproject('json-schema-validator')
+schema_proj = schema_cmake.subproject('pboettch-json-schema-validator')
 
 
 # Define project dependencies
