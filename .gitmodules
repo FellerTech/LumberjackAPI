@@ -6,4 +6,4 @@
 	url = git@github.com:Reliasolve/Hourglass.git
 [submodule "subprojects/pboettch-json-schema-validator"]
 	path = subprojects/pboettch-json-schema-validator
-	url = git@github.com:sfeller/pboettch-json-schema-validator.git
+	url = git@github.com:fellertech/pboettch-json-schema-validator.git
