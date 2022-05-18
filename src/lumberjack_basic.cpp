@@ -30,6 +30,7 @@
 #include <sstream>
 #include <filesystem>
 #include <memory>
+#include <stdlib.h>
 
 #include <chrono>
 #include <ctime>
@@ -55,6 +56,7 @@
 #include <nlohmann/json.hpp>
 using json = nlohmann::json;
 
+
 /**
  * \brief make_unique replacement
  */
@@ -72,7 +74,10 @@ namespace lumberjack {
 
   class Lumberjack::impl {
     public:
-
+      impl() {
+        version_ = LJ_VERSION;
+        hash_ = LJ_HASH;
+      }
 
       /**
        * \brief connects the application to the hourglass API backend
@@ -125,12 +130,17 @@ namespace lumberjack {
 
       std::string getVersion( void )
       {
-        return version_;
+        std::stringstream ss;
+        ss << "version: "<<version_<<", hash: "<<hash_;;;
+
+        //return std::string(LJVERSION);
+        return ss.str();
       };
 
 
     private:  
-      std::string version_ = "0.0.1";
+      std::string version_;
+      std::string hash_;
       hrgls::API api_;
       Status status_ = NO_INIT;
       Severity printLevel_ = WARNING;

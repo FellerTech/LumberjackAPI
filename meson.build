@@ -1,9 +1,12 @@
 project( 'lumberjack' 
   , 'cpp'
-  , version : '0.0.1.-1'
+  , version : '"0.0.1.-1"'
   , license : 'Apache 2.0'
   , default_options : ['c_std=c11', 'cpp_std=c++11']
   )
+
+r = run_command('git', 'rev-parse', 'HEAD', check: true )
+git_hash = r.stdout().strip()
 
 # Make the Hourglass project
 hrgls_cmake = import('cmake')
@@ -28,6 +31,10 @@ lumberjack_lib = static_library( 'lumberjack'
   , 'src/lumberjack_basic.cpp'
   , include_directories : ['src', hrgls_includes]
   , dependencies: [hrgls_lib, thread_dep]
+  , cpp_args : [
+      '-DLJ_VERSION=@0@'.format(meson.project_version())
+      , '-DLJ_HASH="@0@"'.format(git_hash)
+    ]
   )
 
 # Build executable
@@ -41,13 +48,18 @@ executable( 'simple'
   )
 
 # Build gtest
-gtest_dep = dependency( 'gtest', fallback : ['gtest', 'gtest_dep'])
+gtest_proj = subproject('gtest')
+gtest_dep = gtest_proj.get_variable('gtest_dep')
+gmock_dep = gtest_proj.get_variable('gmock_dep')
+#gtest_dep = dependency( 'gtest', fallback : ['gtest', 'gtest_main_dep'])
+#gmock_dep = dependency( 'gmock')
+
 
 tests_src = ['tests/LumberjackUnitTests.cpp']
 tests = executable('LumberjackUnitTests'
    , sources : tests_src
    , include_directories : ['src', hrgls_includes]
-   , dependencies : [gtest_dep]
+   , dependencies : [gtest_dep, gmock_dep]
    , link_with : [lumberjack_lib]
    )
 
