@@ -11,7 +11,9 @@
 
 using ::testing::HasSubstr;
 
-//Test timer accuracy
+/////////////////////////////////////////////
+//Test version 
+/////////////////////////////////////////////
 TEST( VersionTest, delay) {
   std::string targetVersion = "0.0.1.-1";
   lumberjack::Lumberjack lj;
@@ -19,10 +21,21 @@ TEST( VersionTest, delay) {
 
   EXPECT_THAT( version, HasSubstr(targetVersion));
   EXPECT_NE( version, targetVersion );
+}
 
+/////////////////////////////////////////////
+//Test getTimestamp
+/////////////////////////////////////////////
+TEST( Lumberjack, getTimestamp) {
+  lumberjack::Lumberjack lj;
+  double time = lj.getTimestamp();
+  GTEST_COUT << "Time: "<<time << "\n";
 }
 
 
+/////////////////////////////////////////////
+// main function
+/////////////////////////////////////////////
 int main(int argc, char **argv)
 {
   GTEST_COUT << "valid GTEST_COUT macro\n";
