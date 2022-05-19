@@ -49,6 +49,8 @@
 #include <unistd.h>
 #endif
 
+#include <FTTimer.h>
+
 #include <lumberjack.hpp>
 #include <hrgls_api_defs.hpp>
 
@@ -192,6 +194,9 @@ namespace lumberjack {
       }
 
       double getTimestamp() {
+        return FTTimer::getTimestamp();
+
+        /*
         auto now = std::chrono::system_clock::now();
 
         double millis = static_cast<double>(
@@ -200,7 +205,9 @@ namespace lumberjack {
             ).count()
           )/1e6;
 
+
         return millis;
+        */
       }
 
   };

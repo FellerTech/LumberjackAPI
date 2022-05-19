@@ -1,3 +1,6 @@
+#############################################
+# Lumberjack API meson build file
+#############################################
 project( 'lumberjack' 
   , 'cpp'
   , version : '0.0.1.-1'
@@ -8,9 +11,13 @@ project( 'lumberjack'
 r = run_command('git', 'rev-parse', 'HEAD', check: true )
 git_hash = r.stdout().strip()
 
+#############################################
 # Make the Hourglass project
+#############################################
 hrgls_cmake = import('cmake')
-hrgls_proj = hrgls_cmake.subproject('Hourglass', hrgls_cmake_options : ['DCMAKE_CXX_FLAGS=-fpic'])
+hrgls_proj = hrgls_cmake.subproject('Hourglass'
+  , hrgls_cmake_options : ['DCMAKE_CXX_FLAGS=-fpic']
+  )
 hrgls_dep = hrgls_proj.get_variable('cm_hrgls_dep')
 hrgls_lib = hrgls_proj.dependency('hrgls')
 
@@ -18,9 +25,18 @@ hrgls_includes = [ 'subprojects/Hourglass',
   'subprojects/Hourglass/__CMake_build/' 
   ]
 
-## Make the Hourglass project
-schema_cmake = import('cmake')
-schema_proj = schema_cmake.subproject('pboettch-json-schema-validator')
+#############################################
+## Make the json-schema-validator project
+#############################################
+#schema_cmake = import('cmake')
+#schema_proj = schema_cmake.subproject('pboettch-json-schema-validator')
+
+
+#############################################
+#
+#############################################
+fttimer_proj = subproject('fttimer')
+fttimer_dep = fttimer_proj.get_variable( 'fttimer_dep')
 
 
 # Define project dependencies
@@ -30,7 +46,7 @@ thread_dep = dependency('threads')
 lumberjack_lib = static_library( 'lumberjack'
   , 'src/lumberjack_basic.cpp'
   , include_directories : ['src', hrgls_includes]
-  , dependencies: [hrgls_lib, thread_dep]
+  , dependencies: [hrgls_lib, thread_dep, fttimer_dep]
   , cpp_args : [
       '-DLJ_VERSION="@0@"'.format(meson.project_version())
       , '-DLJ_HASH="@0@"'.format(git_hash)
