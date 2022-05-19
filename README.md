@@ -16,6 +16,3 @@ cd ../build/LumberjackAPI
 ninja
 
 
-# GTest Setupa
-meson wrap install gtest
-
