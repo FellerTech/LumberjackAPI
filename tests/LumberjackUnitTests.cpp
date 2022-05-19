@@ -5,6 +5,10 @@
 #include <gmock/gmock.h>
 #include <lumberjack.hpp>
 
+//Macro for custom messages
+#define GTEST_COUT std::cerr << "[ MSG      ] [ INFO ]"
+
+
 using ::testing::HasSubstr;
 
 //Test timer accuracy
