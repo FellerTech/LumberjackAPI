@@ -1,6 +1,6 @@
 project( 'lumberjack' 
   , 'cpp'
-  , version : '"0.0.1.-1"'
+  , version : '0.0.1.-1'
   , license : 'Apache 2.0'
   , default_options : ['c_std=c11', 'cpp_std=c++11']
   )
@@ -32,7 +32,7 @@ lumberjack_lib = static_library( 'lumberjack'
   , include_directories : ['src', hrgls_includes]
   , dependencies: [hrgls_lib, thread_dep]
   , cpp_args : [
-      '-DLJ_VERSION=@0@'.format(meson.project_version())
+      '-DLJ_VERSION="@0@"'.format(meson.project_version())
       , '-DLJ_HASH="@0@"'.format(git_hash)
     ]
   )
