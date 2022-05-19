@@ -49,6 +49,8 @@
 #include <unistd.h>
 #endif
 
+#include <FTTimer.hpp>
+
 #include <lumberjack.hpp>
 #include <hrgls_api_defs.hpp>
 
@@ -138,6 +140,9 @@ namespace lumberjack {
       };
 
 
+      double getTimestamp() {
+        return FTTimer::getTimestamp();
+      };
     private:  
       std::string version_;
       std::string hash_;
@@ -191,7 +196,10 @@ namespace lumberjack {
         return mid;
       }
 
+      /*
       double getTimestamp() {
+        return FTTimer::getTimestamp();
+
         auto now = std::chrono::system_clock::now();
 
         double millis = static_cast<double>(
@@ -200,8 +208,10 @@ namespace lumberjack {
             ).count()
           )/1e6;
 
+
         return millis;
       }
+        */
 
   };
 
@@ -249,6 +259,10 @@ namespace lumberjack {
   {
     return pimpl->getVersion();
   };
+
+  double Lumberjack::getTimestamp() {
+    return pimpl->getTimestamp();
+  }
 }
 
 
