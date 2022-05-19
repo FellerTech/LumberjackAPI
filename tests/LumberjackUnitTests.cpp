@@ -5,6 +5,10 @@
 #include <gmock/gmock.h>
 #include <lumberjack.hpp>
 
+//Macro for custom messages
+#define GTEST_COUT std::cerr << "[ MSG      ] [ INFO ]"
+
+
 using ::testing::HasSubstr;
 
 //Test timer accuracy
@@ -21,6 +25,7 @@ TEST( VersionTest, delay) {
 
 int main(int argc, char **argv)
 {
+  GTEST_COUT << "valid GTEST_COUT macro\n";
   testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();
 }
