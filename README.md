@@ -15,4 +15,5 @@ cd ../build/LumberjackAPI
 ## Build with ninja
 ninja
 
-
+## Run unit tests
+meson test
