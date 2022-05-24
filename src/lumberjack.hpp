@@ -40,7 +40,7 @@ namespace lumberjack {
        * \return version in a major/minor/patch/release format
        **/
       std::string getVersion();
-      Status getStatus();
+      Status getAPIStatus();
 
 
       /**
@@ -57,7 +57,6 @@ namespace lumberjack {
        * \brief  Function to insert a new string-based log message.
        * \param [in] level the enumerated Log level of the issue
        * \param [in] message text information about the event.
-       * \param [in] tags vector of keywords related to the error
        * \return unique ID of the entry on success, empty string on failure
        **/
       std::string append( Severity level
@@ -99,6 +98,13 @@ namespace lumberjack {
       bool appendTag( std::string id
             , std::string tag
           );
+
+      /**
+       * \brief returns the log entry as a string by id
+       * \param [in] id uid of hte log entry
+       * \return string representing the log
+       */
+      std::string getLogStringById( std::string id );
 
       /**
        * \brief sets the log level for the logging module

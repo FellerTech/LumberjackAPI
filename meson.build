@@ -39,16 +39,11 @@ fttimer_proj = subproject('fttimer')
 fttimer_dep = fttimer_proj.get_variable( 'fttimer_dep')
 fttimer_inc = fttimer_proj.get_variable( 'fttimer_inc')
 
-
-
-#message(fttimer_dep)
-
-
 # Define project dependencies
 thread_dep = dependency('threads')
 
 # Build libraries
-lumberjack_lib = static_library( 'lumberjack'
+lumberjack_basic_lib = static_library( 'lumberjack'
   , 'src/lumberjack_basic.cpp'
   , include_directories : ['src', hrgls_includes, fttimer_inc]
   , dependencies: [hrgls_lib, thread_dep, fttimer_dep ]
@@ -58,13 +53,16 @@ lumberjack_lib = static_library( 'lumberjack'
     ]
   )
 
+#############################################
 # Build executable
+#############################################
 executable( 'simple'
   , 'examples/simple.cpp'
   #, install : true
-  ,  dependencies : [hrgls_lib, thread_dep, lumberjack_lib]
+  #  ,  dependencies : [hrgls_lib, thread_dep, lumberjack_lib]
+  ,  dependencies : [hrgls_lib, thread_dep]
   , include_directories : ['src', hrgls_includes]
-  , link_with : [lumberjack_lib ]
+  , link_with : [lumberjack_basic_lib ]
   , dependencies : [ thread_dep ]
   )
 
@@ -76,11 +74,39 @@ gmock_dep = gtest_proj.get_variable('gmock_dep')
 #gmock_dep = dependency( 'gmock')
 
 
-tests_src = ['tests/LumberjackUnitTests.cpp']
-tests = executable('LumberjackUnitTests'
+#############################################
+# Run unit tests (meson test)
+#############################################
+tests_src = ['tests/LumberjackBasicUnitTests.cpp']
+tests = executable('LumberjackBasicUnitTests'
    , sources : tests_src
    , include_directories : ['src', hrgls_includes]
    , dependencies : [gtest_dep, gmock_dep, fttimer_dep]
-   , link_with : [lumberjack_lib]
+   , link_with : [lumberjack_basic_lib]
    )
 
+test('Basic unit tests', tests)
+
+#############################################
+# Build documentation
+#############################################
+doxygen = find_program('doxygen', required: false)
+if doxygen.found()
+  #Set 
+  cdata = configuration_data()
+  cdata.set('VERSION', meson.project_version())
+  cdata.set('GIT_HASH', git_hash )
+
+  doxyfile = configure_file( input : 'Doxyfile.in'
+    , output : 'Doxyfile'
+    , configuration : cdata
+  )
+
+  docs = custom_target('doc'
+    , build_by_default : true
+    , command : [ doxygen, doxyfile ]
+    , output : ['html']
+  )
+else
+   warning('doxygen not found. Documentation disabled')
+endif

@@ -43,6 +43,8 @@
 #include <atomic>
 #include <string>
 
+#include <functional>
+
 #ifdef _WIN32
 #else
 #include <sys/types.h>
@@ -74,12 +76,51 @@ namespace FT {
  */
 namespace lumberjack {
 
+  void HandleCallback( hrgls::Message &message
+      , void * userData
+      )
+  {
+    std::cout << "received message";
+  }
+
+
+  /**
+   * \brief internal implementation class
+   */
   class Lumberjack::impl {
     public:
       impl() {
         version_ = LJ_VERSION;
         hash_ = LJ_HASH;
+
+
       }
+
+      /**
+       * \brief callback for receiving hourglass messages
+       * \param [in] message payload of the function
+       * \param [in] userData pointer to data passed throug
+       */
+      static void  HGMessageCallback(hrgls::Message &message
+          , void * userData 
+          )
+      {
+         size_t * count = static_cast<size_t *>(userData );
+
+         std::cout << *count <<": "<< message.Value() <<std::endl;
+      }
+
+      /**
+       * \brief callback for receiving hourglass messages
+       */
+      static void  HGStreamCallback(hrgls::datablob::DataBlob &blob
+          , void * userData 
+          )
+      {
+        std::cout << "message received"<<std::endl;
+      }
+
+
 
       /**
        * \brief connects the application to the hourglass API backend
@@ -93,8 +134,21 @@ namespace lumberjack {
         }
         else {
           status_ = ERR;
+          return status_;
         }
 
+        //Create a point to the given stream
+        streamPtr_ = new hrgls::datablob::DataBlobSource ( api_
+            , streamProperties_
+            );
+        if( streamPtr_ == NULL ) {
+          status_ = ERR;
+          return status_;
+        }
+
+        //Set the stream callback
+        streamPtr_->SetStreamCallback( &lumberjack::Lumberjack::impl::HGStreamCallback); 
+       
         return status_;
       };
 
@@ -125,7 +179,7 @@ namespace lumberjack {
 
       };
 
-      Status getStatus( void ) 
+      Status getAPIStatus( void ) 
       {
         return status_;
       };
@@ -143,14 +197,37 @@ namespace lumberjack {
       double getTimestamp() {
         return FTTimer::getTimestamp();
       };
+
+      /////////////////////////////////////////////
+      // returns the Log entry as a stringl
+      /////////////////////////////////////////////
+      std::string getLogStringById( std::string id ) {
+        std::string event;
+        //Get json represnetation of log
+
+        //json entry = pimpl->getLocStringById( level, message, tags );
+        //convert json to string
+        //
+        //
+        return event;
+
+      }
+
+
+
     private:  
       std::string version_;
       std::string hash_;
       hrgls::API api_;
+      hrgls::StreamProperties streamProperties_;
+      hrgls::datablob::DataBlobSource * streamPtr_ = NULL; 
+
       Status status_ = NO_INIT;
       Severity printLevel_ = WARNING;
       Severity logLevel_ = ERROR;
       std::thread::id pid; 
+
+      std::function<void(hrgls::datablob::DataBlob, void * )> callback_;
 
       /**
        * \brief get process ID
@@ -217,6 +294,8 @@ namespace lumberjack {
 
   /**
    * \brief Lumberjack main class 
+   *
+   * This class connects to the hrgls API on construction
    */
   Lumberjack::Lumberjack() : pimpl { FT::make_unique<impl>()} 
   {
@@ -225,11 +304,10 @@ namespace lumberjack {
 
   Lumberjack::~Lumberjack() = default;
 
-  //Lumberjack::Lumberjack(Lumberjack&&) = default;
-  //Lumberjack& Lumberjack::operator = (Lumberjack&&) = default;
 
-
+  /////////////////////////////////////////////
   //Function to append a new log message
+  /////////////////////////////////////////////
   std::string Lumberjack::append( Severity level
       , std::string message
       , std::vector<std::string> tags
@@ -239,8 +317,9 @@ namespace lumberjack {
     return "test";
   }
 
-
-  //Function to append a new log message
+  /////////////////////////////////////////////
+  // Function to append a new log message
+  /////////////////////////////////////////////
   std::string Lumberjack::append( Severity level
       , std::string message
       )
@@ -250,9 +329,13 @@ namespace lumberjack {
     return "test";
   }
 
-   
-  Status Lumberjack::getStatus() {
-    return pimpl->getStatus();
+ 
+    
+  /////////////////////////////////////////////
+  // Function to get api status
+  /////////////////////////////////////////////
+  Status Lumberjack::getAPIStatus() {
+    return pimpl->getAPIStatus();
   }
 
   std::string Lumberjack::getVersion( void )
