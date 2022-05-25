@@ -16,7 +16,7 @@ git_hash = r.stdout().strip()
 #############################################
 hrgls_cmake = import('cmake')
 hrgls_proj = hrgls_cmake.subproject('Hourglass'
-  , hrgls_cmake_options : ['DCMAKE_CXX_FLAGS=-fpic']
+  , cmake_options : ['DCMAKE_CXX_FLAGS=-fpic']
   )
 hrgls_dep = hrgls_proj.get_variable('cm_hrgls_dep')
 hrgls_lib = hrgls_proj.dependency('hrgls')
