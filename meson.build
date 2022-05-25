@@ -63,7 +63,6 @@ executable( 'simple'
   ,  dependencies : [hrgls_lib, thread_dep]
   , include_directories : ['src', hrgls_includes]
   , link_with : [lumberjack_basic_lib ]
-  , dependencies : [ thread_dep ]
   )
 
 # Build gtest
