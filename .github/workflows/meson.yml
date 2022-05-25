@@ -27,8 +27,8 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses : actions/checkout@v3
-      - name : build
-        run  : meson build ${{github.workspace}}/build
+#      - name : build
+#        run  : meson build ${{github.workspace}}/build
       - name : compile
         run  : cd ${{github.workspace}}/build; ninja
       - name : test lumberjackAPI
