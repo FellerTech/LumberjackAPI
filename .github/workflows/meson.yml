@@ -1,0 +1,65 @@
+
+# This is a basic workflow to help you get started with Actions
+
+name: CI Lumberjack 
+author: sfeller
+description: Build and run unit tests
+
+on:
+  # Triggers the workflow on push or pull request events but only for the main branch
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+
+inputs:
+  directory:
+    description: The directory to build the project to
+    required: true
+    default: 'build'
+  setup-options:
+    description: Additional options to pass to Meson during setup
+    required: false
+    default: ''
+  options:
+    description: Additional options to pass to Meson
+    required: false
+    default: ''
+  meson-version:
+    description: The version of Meson to use
+    required: true
+    default: '0.53.2'
+  ninja-version:
+    description: The version of Ninja to use
+    required: true
+    default: '1.9.0.post1'
+
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v3
+      - name : test lumberjackAPI
+        run : LumberjackBasicUnitTests
+    
+
+#      # Runs a single command using the runners shell
+#      - name: Run a one-line script
+#        run: echo Hello, world!
+
+#      # Runs a set of commands using the runners shell
+#      - name: Run a multi-line script
+#        run: |
+#          echo Add other actions to build,
+#          echo test, and deploy your project.
