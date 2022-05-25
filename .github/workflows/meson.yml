@@ -31,7 +31,7 @@ jobs:
         run  : |
                sudo apt install meson ninja-build 
       - name : build
-        run  : meson build ${{github.workspace}}/build
+        run  : meson ${{github.workspace}}/build
       - name : compile
         run  : cd ${{github.workspace}}/build; ninja
       - name : test lumberjackAPI
