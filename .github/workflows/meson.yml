@@ -16,29 +16,6 @@ on:
   workflow_dispatch:
 
 
-inputs:
-  directory:
-    description: The directory to build the project to
-    required: true
-    default: 'build'
-  setup-options:
-    description: Additional options to pass to Meson during setup
-    required: false
-    default: ''
-  options:
-    description: Additional options to pass to Meson
-    required: false
-    default: ''
-  meson-version:
-    description: The version of Meson to use
-    required: true
-    default: '0.53.2'
-  ninja-version:
-    description: The version of Ninja to use
-    required: true
-    default: '1.9.0.post1'
-
-
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
